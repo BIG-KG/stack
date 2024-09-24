@@ -1,0 +1,51 @@
+<html>
+<head>
+<title>stack build log</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /></head>
+<body>
+<tt>
+Build started on: <u>25-09-2024 at 02:15.01</u><br />
+Build ended on: <u>25-09-2024 at 02:15.03</u><p />
+<b>-------------- Build: Debug in stack (compiler: NOT FOR PROJECTS! = MinGW GCC + Strict + Fast + Save (Requires Git))---------------</b><br />
+g++git-auto.bat "C:\MIPT\stack\main.cpp" -o bin\Debug\stack.exe  -Wall -fexceptions  -g  -Wall -Wextra -Weffc++ -Wcast-align -Wcast-qual -Wconversion -Wctor-dtor-privacy -Wempty-body -Wfloat-equal -Wformat-security -Wformat=2 -Wignored-qualifiers -Winit-self -Winline -Wlogical-op -Wmain -Wmissing-declarations -Wno-missing-field-initializers -Wmissing-include-dirs -Wnon-virtual-dtor -Woverloaded-virtual -Wpointer-arith -Wredundant-decls -Wshadow -Wsign-promo -Wstack-usage=8192 -Wstrict-aliasing -Wstrict-null-sentinel -Wswitch-default -Wswitch-enum -Wtype-limits -Wundef -Wunreachable-code -Wwrite-strings -fexceptions -g -pipe -D_DEBUG -D_EJUDGE_CLIENT_SIDE -D_EJC<br />
+------------------------------------------------------------------------------------------------------<br />
+Compilation ERRORS:<br />
+<br />
+In file included from C:\MIPT\stack\main.cpp:5:0:<br />
+<font color="#0000ff">C:\MIPT\stack\stack_types.h:5:1: warning: this decimal constant is unsigned only in ISO C90 [enabled by default]</font><br />
+ const int ERROR_RETURN = -2147483648;<br />
+ ^<br />
+C:\MIPT\stack\main.cpp: In function 'int stack_ok(stack_t*)':<br />
+<font color="#0000ff">C:\MIPT\stack\main.cpp:8:5: warning: no previous declaration for 'int stack_ok(stack_t*)' [-Wmissing-declarations]</font><br />
+ int stack_ok(stack_t * targetStack){<br />
+     ^<br />
+<font color="#0000ff">C:\MIPT\stack\main.cpp:10:9: warning: unused variable 'g' [-Wunused-variable]</font><br />
+     int g = (1 &amp; (int)(targetStack-&gt;dataPtr));//что ещё нужно?<br />
+         ^<br />
+<font color="#0000ff">C:\MIPT\stack\main.cpp:12:1: warning: no return statement in function returning non-void [-Wreturn-type]</font><br />
+ }<br />
+ ^<br />
+C:\MIPT\stack\main.cpp: In function 'int stack_init(stack_t**)':<br />
+<font color="#0000ff">C:\MIPT\stack\main.cpp:14:5: warning: no previous declaration for 'int stack_init(stack_t**)' [-Wmissing-declarations]</font><br />
+ int stack_init(stack_t ** ptrtargetStack){<br />
+     ^<br />
+C:\MIPT\stack\main.cpp: In function 'int pop(stack_t*)':<br />
+<font color="#0000ff">C:\MIPT\stack\main.cpp:31:5: warning: no previous declaration for 'int pop(stack_t*)' [-Wmissing-declarations]</font><br />
+ int pop(stack_t * targetStack){<br />
+     ^<br />
+C:\MIPT\stack\main.cpp: In function 'int push(stack_t*, int)':<br />
+<font color="#0000ff">C:\MIPT\stack\main.cpp:48:5: warning: no previous declaration for 'int push(stack_t*, int)' [-Wmissing-declarations]</font><br />
+ int push(stack_t * targetStack, int pushingEl){<br />
+     ^<br />
+C:\MIPT\stack\main.cpp: In function 'int look(stack_t*, int)':<br />
+<font color="#0000ff">C:\MIPT\stack\main.cpp:63:5: warning: no previous declaration for 'int look(stack_t*, int)' [-Wmissing-declarations]</font><br />
+ int look(stack_t * targetStack, int ElNum){<br />
+     ^<br />
+------------------------------------------------------------------------------------------------------<br />
+Autosaving to the Git repository in C:/MIPT/stack/.git-auto/... <br />
+Output size is 1,48 MB<br />
+<font color="#0000ff">Process terminated with status 0 (0 minutes, 1 seconds)</font><br />
+<font color="#0000ff">0 errors, 8 warnings (0 minutes, 1 seconds)</font><br />
+</tt>
+</body>
+</html>

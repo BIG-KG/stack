@@ -1,0 +1,70 @@
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <assert.h>
+#include "stack_types.h"
+
+
+int stack_ok(stack_t * targetStack){
+
+    int g = (1 & (int)(targetStack->dataPtr));//что ещё нужно?
+
+}
+
+int stack_init(stack_t ** ptrtargetStack){
+
+    //assert(targetStack);
+    
+    targetStack = (stack_t *)calloc(sizeof(stack_t), 1);
+    *ptrtargetStack = targetStack;
+
+    stack_t *tmpPointer  = (stack_t *)calloc(sizeof(int), START_STACK_SIZE);
+    assert(tmpPointer);
+    targetStack->dataPtr = tmpPointer;
+
+    targetStack->currSize = 0;
+    targetStack-> maxSize = START_STACK_SIZE;
+
+    return targetStack-> maxSize;
+}
+
+int pop(stack_t * targetStack){
+
+    if(targetStack->currSize < 1){
+        printf("Error stack is empty");
+        return ERROR_RETURN;
+    }
+
+    assert(targetStack);
+
+    int tamporyEl = *((int*)(targetStack->dataPtr) + targetStack->currSize);
+    targetStack->currSize--;
+
+    //add sizechack
+
+    return tamporyEl;
+}
+
+int push(stack_t * targetStack, int pushingEl){
+
+    assert(targetStack);
+
+    targetStack->currSize++;
+
+    //add size++
+
+    *((int*)(targetStack->dataPtr) + (targetStack->currSize-1)) = pushingEl;
+
+    return targetStack->currSize;
+}
+
+
+int main()
+{
+    stack_t *testStack = NULL;
+    stack_init(testStack);
+
+    push(testStack, 10);
+    push(testStack, 20);
+    printf("%d", pop(testStack));
+}
