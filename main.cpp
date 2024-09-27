@@ -1,18 +1,26 @@
 #include "stack_types.h"
+
 #include "errors.h"
 
+#include "const.h"
+
+extern char Stack_error_global;
+extern void *Problem_steck_global;
 
 int main()
 {
     void * testStack = NULL;
-    stack_init(&testStack);
+    stack_ctor(&testStack);
 
-    push(testStack, 10);
-    push(testStack, 20);
+    IF_RIGHT_STACK push(testStack, 10) CHECK(testStack);
+    IF_RIGHT_STACK push(testStack, 20) CHECK(testStack);
     printf("%d\n", look(testStack, 0));
     printf("%d\n", pop(testStack));
     push(testStack, 30);
     push(testStack, 40);
     printf("%d\n", pop(testStack));
     printf("%d\n", pop(testStack));
+
+
+    stack_dtor(testStack, 1);
 }

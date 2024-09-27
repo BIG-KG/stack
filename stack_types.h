@@ -13,6 +13,7 @@
         }                               \
 }                                       \
 
+
 typedef int stackEl;
 
 const int START_STACK_SIZE = 10;
@@ -39,7 +40,7 @@ int stack_ctor(void ** VptrTargetStack);
 
 int stack_size_chk(void *vptrTargetStack);
 
-void stack_dump(void *vptrTargetStack, int checkNeed);
+int stack_dump(void *vptrTargetStack, int checkNeed);
 
 int stack_ok(void *vptrTargetStack);
 

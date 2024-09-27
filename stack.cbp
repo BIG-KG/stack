@@ -3,7 +3,6 @@
 	<FileVersion major="1" minor="6" />
 	<Project>
 		<Option title="stack" />
-		<Option makefile_is_custom="1" />
 		<Option pch_mode="2" />
 		<Option compiler="not_for_projects__mingw_gcc__strict__fast__save_requires_git" />
 		<Build>
@@ -36,10 +35,7 @@
 		<Unit filename="errors.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="stack_types.h" />
-		<Extensions>
-			<code_completion />
-			<envvars />
-			<debugger />
-		</Extensions>
+		<Unit filename="stackfunk.cpp" />
+		<Extensions />
 	</Project>
 </CodeBlocks_project_file>

@@ -6,31 +6,31 @@
 #include <stdlib.h>
 #include <assert.h>
 
-#defile IF_RIGHT_STACK if(!Stack_error_global)
+#define IF_RIGHT_STACK if(!Stack_error_global)
+
+             /*if(docheck != ' '){
+                stack_ok(doChaeck);
+            }*/
 
 
-#defile CHECK(doChaeck) ; {                                             \
-            /*if(docheck != ' '){                                         \
-                stack_ok(doChaeck);                                     \   нужно ли ещё раз проверять?
-            }*/                                                           \
-                                                                        \                                                                        \
+#define CHECK(doChaeck) ;                                               \
             if(Stack_error_global != 0){                                \
                 printf("Error on line %d", __LINE__ );                  \
                 if(      (Stack_error_global == STACK_UNDERFLOW)  ||    \
                          (Stack_error_global == STACK_OVERFLOW )    ){  \
                                                                         \
-                    stackdump(Problem_stack_global, 1);                 \
+                    stack_dump(Problem_steck_global, 1);                \
                                                                         \
                 }                                                       \
                 else if( (Stack_error_global == NULL_STACK_PTR) ||      \
-                         (Stack_error_global == NULL_DATA_PTR ){        \
+                         (Stack_error_global == NULL_DATA_PTR )    ){   \
                                                                         \
-                    stackdump(Problem_stack_global, 1);                 \
-                                                                        \
+                    stack_dump(Problem_steck_global, 1);                \
                 }                                                       \
-                stack_dtor(doChaeck)                                    \
-            }                                                           \ /*нужно ли делать?*/                                                                       \
-         }                                                              \
+                stack_dtor(doChaeck, 1);                                \
+            }                                                                                                                                   \
+
+          /*нужно ли делать?(stack_dtor(doChaeck))*/
 
 enum error_codes{
 

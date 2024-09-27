@@ -1,13 +1,14 @@
 #include "stack_types.h"
 #include "errors.h"
+#include "const.h"
 
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
 
-char Stack_error_global = 0;
-void *Problem_steck_global = 0;
+extern char Stack_error_global;
+extern void *Problem_steck_global;
 
 int stack_ok(void *vptrTargetStack){
 
@@ -20,20 +21,20 @@ int stack_ok(void *vptrTargetStack){
     stack_t * ptrTargetStack = (stack_t *)vptrTargetStack;
 
     if (!(ptrTargetStack->dataPtr)){
-        Stack_error_global = NULL_DATAPTR;
+        Stack_error_global = NULL_DATA_PTR;
         Problem_steck_global = vptrTargetStack;
-        return NULL_DATAPTR;
+        return NULL_DATA_PTR;
     }
 
-    if ( (ptrTargetStack->currsize) > (ptrTargetStack->maxsize) ){
+    if ( (ptrTargetStack->currSize) > (ptrTargetStack->maxSize) ){
         Stack_error_global = STACK_OVERFLOW;
         Problem_steck_global = vptrTargetStack;
         return STACK_OVERFLOW;
     }
 
-    if ( (ptrTargetStack->currsize) < 0 ){
+    if ( (ptrTargetStack->currSize) < 0 ){
         Stack_error_global = STACK_UNDERFLOW;
-        Problem_steck_global = vptrTargetStack;/
+        Problem_steck_global = vptrTargetStack;
         return STACK_UNDERFLOW;
     }
 
@@ -51,7 +52,7 @@ int stack_dump(void *vptrTargetStack, int checkNeed){
         }
 
         stack_t * ptrTargetStack = (stack_t *)vptrTargetStack;
-        printf("currsize = %d, maxsize = %d\n", ptrTargetStack->currSize, ptrTargetStack->maxSize);
+        printf("currSize = %d, maxsize = %d\n", ptrTargetStack->currSize, ptrTargetStack->maxSize);
 
         if(Stack_error_global == NULL_DATA_PTR){
             printf("ERROR pointer tustruct is NULL");
@@ -63,7 +64,7 @@ int stack_dump(void *vptrTargetStack, int checkNeed){
 
     stack_t * ptrTargetStack = (stack_t *)vptrTargetStack;
 
-    printf("currsize = %d, maxsize = %d\n", ptrTargetStack->currSize, ptrTargetStack->maxSize);
+    printf("currSize = %d, maxsize = %d\n", ptrTargetStack->currSize, ptrTargetStack->maxSize);
 
     return 0;
 }
@@ -91,7 +92,8 @@ int stack_size_chk(void *vptrTargetStack){
 
     }
     else if(  ((ptrTargetStack->currSize)  <  (ptrTargetStack->maxSize/SIZE_STEP_DOWN))  &&
-            ((ptrTargetStack->currSize) > START_STACK_SIZE)  ){
+            ((ptrTargetStack->maxSize) > START_STACK_SIZE)  ){
+            printf("aaaaaaaaaaaaaaaaaaa");
 
         //printf("\n\nstartsize = %d   crrsize = %d   ", ptrTargetStack->maxSize, ptrTargetStack->currSize);
 
@@ -119,6 +121,7 @@ int stack_size_chk(void *vptrTargetStack){
 }
 
 int stack_ctor(void ** VptrTargetStack){
+
 
     if(!VptrTargetStack){
         printf("Error, can't make stack");
@@ -180,7 +183,7 @@ int push(void * vptrTargetStack, int pushingEl){
 
     IF_ERR_GO_OUT(vptrTargetStack);
 
-    return sack_ok(vptrTargetStack);
+    return stack_ok(vptrTargetStack);
 
 }
 
