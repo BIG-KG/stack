@@ -16,10 +16,15 @@
 
 typedef int stackEl;
 
-const int START_STACK_SIZE = 10;
-const int SIZE_STEP_UP = 2;
-const int SIZE_STEP_DOWN = SIZE_STEP_UP * SIZE_STEP_UP;
-const int ERROR_RETURN = -2147483648;
+const int START_STACK_SIZE     = 10;
+const int SIZE_STEP_UP         = 2;
+const int SIZE_STEP_DOWN       = SIZE_STEP_UP * SIZE_STEP_UP;
+const int INCREASE_STEP        = 2;
+const int DECREASE_STEP        = 2;
+const int REAL_DECREASE_STEP   = 2;
+const int START_STACK_ARR_SIZE = 10;
+const int ERROR_RETURN        = -2147483648;
+
 
 
 struct stack_t{
@@ -27,23 +32,36 @@ struct stack_t{
     void *dataPtr = NULL;
     int currSize  = 0;
     int maxSize   = 0;
+};
+
+struct stack_array{
+
+    void **stack_ptrs = NULL;
+    int capacity      = 0;
+    int numOfStack    = 0;
 
 };
 
-int look(void * vptrTargetStack, int ElNum);
+void stack_array_decrease (int num);
 
-int push(void * vptrTargetStack, int pushingEl);
+void stack_array_increase (void);
 
-int pop(void * vptrTargetStack);
+void stack_array_size_check ();
 
-int stack_ctor(void ** VptrTargetStack);
+int stack_ok(int num);
 
-int stack_size_chk(void *vptrTargetStack);
+int stack_dump(int num, int checkNeed);
 
-int stack_dump(void *vptrTargetStack, int checkNeed);
+int stack_size_chk(int num);
 
-int stack_ok(void *vptrTargetStack);
+int stack_ctor(int num);
 
-int stack_dtor(void * vptrTargetStack, int check_right);
+int pop(int num);
+
+int push(int num, int pushingEl);
+
+int look(int num, int ElNum);
+
+int stack_dtor(int num, int check_right);
 
 #endif // STACK_TYPES_H_INCLUDED

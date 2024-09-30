@@ -7,13 +7,79 @@
 #include <stdlib.h>
 #include <assert.h>
 
-extern char Stack_error_global;
-extern void *Problem_steck_global;
 
-int stack_ok(void *vptrTargetStack){
+static stack_array Stack = {};
+
+void stack_array_decrease (int num){
+
+    memcpy (Stack.stack_ptrs + num, Stack.stack_ptrs + num + 1, Stack.numOfStack - num - 1);
+
+    Stack.numOfStack --;
+    stack_array_size_check();
+
+}
+
+void stack_array_increase (void){
+
+    if(Stack.numOfStack != 0){
+        Stack.numOfStack ++;
+        stack_array_size_check();
+    }
+    else{
+        Stack.numOfStack ++;
+        stack_array_size_check();
+        Stack.numOfStack --;
+
+    }
+
+}
+
+void stack_array_size_check (){
+
+    if (Stack.numOfStack == 0 && Stack.capacity != 0){
+
+        free(Stack.stack_ptrs);
+
+        Stack.stack_ptrs = NULL;
+
+        Stack.capacity = 0;
+
+
+    }
+
+    else if (Stack.numOfStack >= Stack.capacity){
+
+        int minAllowdSize  = (Stack.numOfStack * INCREASE_STEP) > START_STACK_ARR_SIZE ? (Stack.numOfStack * INCREASE_STEP) : START_STACK_ARR_SIZE;
+        void **tmp_pointer = (void **)realloc(Stack.stack_ptrs, sizeof(void*)* minAllowdSize);
+
+        assert(tmp_pointer);
+
+        Stack.stack_ptrs = tmp_pointer;
+        Stack.capacity   = minAllowdSize;
+
+    }
+
+    else if (Stack.numOfStack < Stack.capacity/DECREASE_STEP){
+
+        int minAllowdSize  = (Stack.numOfStack / REAL_DECREASE_STEP) > START_STACK_ARR_SIZE ? (Stack.numOfStack / REAL_DECREASE_STEP) : START_STACK_ARR_SIZE;
+
+        void **tmp_pointer = (void **)realloc(Stack.stack_ptrs, sizeof(void*)* minAllowdSize);
+
+        assert(tmp_pointer);
+
+        Stack.stack_ptrs = tmp_pointer;
+        Stack.capacity   = minAllowdSize;
+
+    }
+
+}
+
+int stack_ok (int num){
+
+    void *vptrTargetStack = Stack.stack_ptrs[num];
 
     if (!vptrTargetStack){
-        Stack_error_global = NULL_STACK_PTR;
+        Stack_error_global   = NULL_STACK_PTR;
         Problem_steck_global = vptrTargetStack;
         return NULL_STACK_PTR;
     }
@@ -21,13 +87,13 @@ int stack_ok(void *vptrTargetStack){
     stack_t * ptrTargetStack = (stack_t *)vptrTargetStack;
 
     if (!(ptrTargetStack->dataPtr)){
-        Stack_error_global = NULL_DATA_PTR;
+        Stack_error_global   = NULL_DATA_PTR;
         Problem_steck_global = vptrTargetStack;
         return NULL_DATA_PTR;
     }
 
     if ( (ptrTargetStack->currSize) > (ptrTargetStack->maxSize) ){
-        Stack_error_global = STACK_OVERFLOW;
+        Stack_error_global   = STACK_OVERFLOW;
         Problem_steck_global = vptrTargetStack;
         return STACK_OVERFLOW;
     }
@@ -42,7 +108,9 @@ int stack_ok(void *vptrTargetStack){
 
 }
 
-int stack_dump(void *vptrTargetStack, int checkNeed){
+int stack_dump (int num, int checkNeed){
+
+    void *vptrTargetStack = Stack.stack_ptrs[num];
 
     if (checkNeed == 1){
 
@@ -69,9 +137,11 @@ int stack_dump(void *vptrTargetStack, int checkNeed){
     return 0;
 }
 
-int stack_size_chk(void *vptrTargetStack){
+int stack_size_chk (int num){
 
-    IF_ERR_GO_OUT(vptrTargetStack);
+    void *vptrTargetStack = Stack.stack_ptrs[num];
+
+    IF_ERR_GO_OUT(num);
 
     stack_t * ptrTargetStack = (stack_t *)vptrTargetStack;
 
@@ -114,14 +184,17 @@ int stack_size_chk(void *vptrTargetStack){
 
     }
 
-    IF_ERR_GO_OUT(vptrTargetStack);
+    IF_ERR_GO_OUT(num);
 
     return 1;
 
 }
 
-int stack_ctor(void ** VptrTargetStack){
+int stack_ctor (void){
 
+    stack_array_increase();
+
+    void ** VptrTargetStack = &Stack.stack_ptrs[Stack.numOfStack];
 
     if(!VptrTargetStack){
         printf("Error, can't make stack");
@@ -138,14 +211,16 @@ int stack_ctor(void ** VptrTargetStack){
     ptrTargetStack->currSize = 0;
     ptrTargetStack-> maxSize = START_STACK_SIZE;
 
-    IF_ERR_GO_OUT(*VptrTargetStack);
+    IF_ERR_GO_OUT(Stack.numOfStack);
 
-    return ptrTargetStack-> maxSize;
+    return Stack.numOfStack;
 }
 
-int pop(void * vptrTargetStack){
+int pop (int num){
 
-    IF_ERR_GO_OUT(vptrTargetStack);
+    void *vptrTargetStack = Stack.stack_ptrs[num];
+
+    IF_ERR_GO_OUT(num);
 
     stack_t * ptrTargetStack = (stack_t *)vptrTargetStack;
 
@@ -159,16 +234,18 @@ int pop(void * vptrTargetStack){
 
     int tamporyEl = *((int*)(ptrTargetStack->dataPtr) + --ptrTargetStack->currSize);
 
-    stack_size_chk(vptrTargetStack);
+    stack_size_chk(num);
 
-    IF_ERR_GO_OUT(vptrTargetStack);
+    IF_ERR_GO_OUT(num);
 
     return tamporyEl;
 }
 
-int push(void * vptrTargetStack, int pushingEl){
+int push (int num, int pushingEl){
 
-    IF_ERR_GO_OUT(vptrTargetStack);
+    void *vptrTargetStack = Stack.stack_ptrs[num];
+
+    IF_ERR_GO_OUT(num);
 
     stack_t * ptrTargetStack = (stack_t *)vptrTargetStack;
 
@@ -177,19 +254,21 @@ int push(void * vptrTargetStack, int pushingEl){
 
     ptrTargetStack->currSize++;
 
-    stack_size_chk(vptrTargetStack);
+    stack_size_chk(num);
 
     *((int*)(ptrTargetStack->dataPtr) + (ptrTargetStack->currSize - 1)) = pushingEl;
 
-    IF_ERR_GO_OUT(vptrTargetStack);
+    IF_ERR_GO_OUT(num);
 
-    return stack_ok(vptrTargetStack);
+    return stack_ok(num);
 
 }
 
-int look(void * vptrTargetStack, int ElNum){
+int look (int num, int ElNum){
 
-    IF_ERR_GO_OUT(vptrTargetStack);
+    void *vptrTargetStack = Stack.stack_ptrs[num];
+
+    IF_ERR_GO_OUT(num);
 
     //assert(vptrTargetStack);
     //assert(((stack_t *)vptrTargetStack)->dataPtr);
@@ -198,31 +277,29 @@ int look(void * vptrTargetStack, int ElNum){
 
     //add ElNum obrobotku
 
-    IF_ERR_GO_OUT(vptrTargetStack);
+    IF_ERR_GO_OUT(num);
 
     return *((int*)(ptrTtargetStack->dataPtr) + (ptrTtargetStack->currSize - 1 - ElNum));
 
 }
 
-int stack_dtor(void * vptrTargetStack, int check_right){
+int stack_dtor (int num, int check_right){
 
-    static int had_dest = 0;
+    void *vptrTargetStack = Stack.stack_ptrs[num];
 
-    if(!had_dest){
-        if(  (Stack_error_global != NULL_STACK_PTR)  ||  !(check_right)  ){
+    if(num < 0 || num)
 
-            stack_t * ptrTtargetStack = (stack_t *)vptrTargetStack;
-            if(  (Stack_error_global != NULL_DATA_PTR)  ||  !(check_right)  ){
-                free(ptrTtargetStack->dataPtr);
-            }
-            free(ptrTtargetStack);
+    if(  (Stack_error_global != NULL_STACK_PTR)  ||  !(check_right)  ){
+
+        stack_t * ptrTtargetStack = (stack_t *)vptrTargetStack;
+
+        if(  (Stack_error_global != NULL_DATA_PTR)  ||  !(check_right)  ){
+            free(ptrTtargetStack->dataPtr);
         }
+        free(ptrTtargetStack);
     }
 
-    had_dest = 1;
+    stack_array_decrease (num);
 
     return 0;
 }
-
-
-

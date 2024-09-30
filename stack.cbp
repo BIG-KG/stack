@@ -32,6 +32,8 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="const.cpp" />
+		<Unit filename="const.h" />
 		<Unit filename="errors.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="stack_types.h" />
