@@ -1,6 +1,7 @@
 #include "stack_types.h"
 #include "errors.h"
 #include "const.h"
+#include "canary.h"
 
 #include <iostream>
 #include <stdio.h>
@@ -8,99 +9,32 @@
 #include <assert.h>
 
 
-static stack_array Stack = {};
-
-void stack_array_decrease (int num){
-
-    memcpy (Stack.stack_ptrs + num, Stack.stack_ptrs + num + 1, Stack.numOfStack - num - 1);
-
-    Stack.numOfStack --;
-    stack_array_size_check();
-
-}
-
-void stack_array_increase (void){
-
-    if(Stack.numOfStack != 0){
-        Stack.numOfStack ++;
-        stack_array_size_check();
-    }
-    else{
-        Stack.numOfStack ++;
-        stack_array_size_check();
-        Stack.numOfStack --;
-
-    }
-
-}
-
-void stack_array_size_check (){
-
-    if (Stack.numOfStack == 0 && Stack.capacity != 0){
-
-        free(Stack.stack_ptrs);
-
-        Stack.stack_ptrs = NULL;
-
-        Stack.capacity = 0;
-
-
-    }
-
-    else if (Stack.numOfStack >= Stack.capacity){
-
-        int minAllowdSize  = (Stack.numOfStack * INCREASE_STEP) > START_STACK_ARR_SIZE ? (Stack.numOfStack * INCREASE_STEP) : START_STACK_ARR_SIZE;
-        void **tmp_pointer = (void **)realloc(Stack.stack_ptrs, sizeof(void*)* minAllowdSize);
-
-        assert(tmp_pointer);
-
-        Stack.stack_ptrs = tmp_pointer;
-        Stack.capacity   = minAllowdSize;
-
-    }
-
-    else if (Stack.numOfStack < Stack.capacity/DECREASE_STEP){
-
-        int minAllowdSize  = (Stack.numOfStack / REAL_DECREASE_STEP) > START_STACK_ARR_SIZE ? (Stack.numOfStack / REAL_DECREASE_STEP) : START_STACK_ARR_SIZE;
-
-        void **tmp_pointer = (void **)realloc(Stack.stack_ptrs, sizeof(void*)* minAllowdSize);
-
-        assert(tmp_pointer);
-
-        Stack.stack_ptrs = tmp_pointer;
-        Stack.capacity   = minAllowdSize;
-
-    }
-
-}
-
-int stack_ok (int num){
-
-    void *vptrTargetStack = Stack.stack_ptrs[num];
+int stack_ok(void *vptrTargetStack){
 
     if (!vptrTargetStack){
-        Stack_error_global   = NULL_STACK_PTR;
-        Problem_steck_global = vptrTargetStack;
+        Stack_error_global = NULL_STACK_PTR;
         return NULL_STACK_PTR;
     }
 
     stack_t * ptrTargetStack = (stack_t *)vptrTargetStack;
 
     if (!(ptrTargetStack->dataPtr)){
-        Stack_error_global   = NULL_DATA_PTR;
-        Problem_steck_global = vptrTargetStack;
+        Stack_error_global = NULL_DATA_PTR;
         return NULL_DATA_PTR;
     }
 
+    if(  *((int64_t *)(ptrTargetStack->dataPtr) - 1) != canary()  ){
+        printf("real canry = %ld, given canry = %ld", canary(), *((int64_t *)(ptrTargetStack->dataPtr) - 1));
+        Stack_error_global = BROKEN_CANNARY;
+    }
+
     if ( (ptrTargetStack->currSize) > (ptrTargetStack->maxSize) ){
-        Stack_error_global   = STACK_OVERFLOW;
-        Problem_steck_global = vptrTargetStack;
+        Stack_error_global = STACK_OVERFLOW;
         return STACK_OVERFLOW;
     }
 
     if ( (ptrTargetStack->currSize) < 0 ){
         Stack_error_global = STACK_UNDERFLOW;
-        Problem_steck_global = vptrTargetStack;
         return STACK_UNDERFLOW;
     }
 
@@ -108,9 +42,7 @@ int stack_ok (int num){
 
 }
 
-int stack_dump (int num, int checkNeed){
-
-    void *vptrTargetStack = Stack.stack_ptrs[num];
+int stack_dump(void *vptrTargetStack, int checkNeed){
 
     if (checkNeed == 1){
 
@@ -137,64 +69,60 @@ int stack_dump (int num, int checkNeed){
     return 0;
 }
 
-int stack_size_chk (int num){
+int stack_size_chk(void *vptrTargetStack){
 
-    void *vptrTargetStack = Stack.stack_ptrs[num];
+    IF_ERR_GO_OUT(vptrTargetStack);
 
-    IF_ERR_GO_OUT(num);
 
     stack_t * ptrTargetStack = (stack_t *)vptrTargetStack;
 
     if(  (ptrTargetStack->currSize)  >=  (ptrTargetStack->maxSize)  ){
 
-        void *tmpDataPtr = realloc(ptrTargetStack->dataPtr ,sizeof(int) * (ptrTargetStack->maxSize) * SIZE_STEP_UP);
+        int newSize      = (ptrTargetStack->maxSize) * SIZE_STEP_UP;
+        void *tmpDataPtr = realloc (  ((char *)ptrTargetStack->dataPtr - 8) , ((sizeof(stackEl) * newSize / 64)  + 3) * 64  );
 
         if(tmpDataPtr == NULL){
             printf("ERROR cant expend stack.");
             return 0;
         }
-        //printf("\n\nextstartsize = %d  ", ptrTargetStack->maxSize);
-        ptrTargetStack->dataPtr  = tmpDataPtr;
+
+        plant_canary(tmpDataPtr, newSize, sizeof(stackEl));
+        ptrTargetStack->dataPtr  = (char *)tmpDataPtr + 8;
         ptrTargetStack->maxSize *= SIZE_STEP_UP;
-        //printf("\n\nsize = %d  ", ptrTargetStack->maxSize);
 
         return 1;
 
     }
-    else if(  ((ptrTargetStack->currSize)  <  (ptrTargetStack->maxSize/SIZE_STEP_DOWN))  &&
-            ((ptrTargetStack->maxSize) > START_STACK_SIZE)  ){
-            printf("aaaaaaaaaaaaaaaaaaa");
 
-        //printf("\n\nstartsize = %d   crrsize = %d   ", ptrTargetStack->maxSize, ptrTargetStack->currSize);
+
+    else if(  ((ptrTargetStack->currSize)  <  (ptrTargetStack->maxSize/SIZE_STEP_DOWN))  &&
+              ((ptrTargetStack->maxSize) > START_STACK_SIZE)  ){
 
         ptrTargetStack->maxSize /= SIZE_STEP_DOWN;
 
-        void *tmpDataPtr = realloc(ptrTargetStack->dataPtr, sizeof(int) * (ptrTargetStack->maxSize));
-
-        //printf("   size = %d\n\n", ptrTargetStack->maxSize);
+        void *tmpDataPtr = realloc(  ((char *)ptrTargetStack->dataPtr - 8) , ((sizeof(stackEl) * ptrTargetStack->maxSize / 64)  + 3) * 64  );
 
         if(tmpDataPtr == NULL){
             printf("ERROR cant narrow down stack.");
             return 0;
         }
 
-        ptrTargetStack->dataPtr  = tmpDataPtr;
+        plant_canary(tmpDataPtr, ptrTargetStack->maxSize, sizeof(stackEl));
+        ptrTargetStack->dataPtr = (char *)tmpDataPtr + 8;
 
         return 1;
 
     }
 
-    IF_ERR_GO_OUT(num);
+
+    IF_ERR_GO_OUT(vptrTargetStack);
 
     return 1;
 
 }
 
-int stack_ctor (void){
+int stack_ctor(void ** VptrTargetStack){
 
-    stack_array_increase();
-
-    void ** VptrTargetStack = &Stack.stack_ptrs[Stack.numOfStack];
 
     if(!VptrTargetStack){
         printf("Error, can't make stack");
@@ -202,25 +130,29 @@ int stack_ctor (void){
     }
 
     stack_t *ptrTargetStack = (stack_t *)calloc(sizeof(stack_t), 1);
+    ptrTargetStack->strCanry = canary();
+    ptrTargetStack->endCamry = canary();
     *VptrTargetStack = ptrTargetStack;
 
-    void *tmpPointer  = (void *)calloc(sizeof(int), START_STACK_SIZE);
+    int realSize            = (  (sizeof(stackEl) * START_STACK_SIZE / 64)  + 3) * 64;
+    void *tmpPointer        = (void *)calloc(realSize, 1);
     assert(tmpPointer);
-    ptrTargetStack->dataPtr = tmpPointer;
+
+    plant_canary(tmpPointer, START_STACK_SIZE, sizeof(stackEl));
+
+    ptrTargetStack->dataPtr = (char *)tmpPointer + 8;
 
     ptrTargetStack->currSize = 0;
     ptrTargetStack-> maxSize = START_STACK_SIZE;
 
-    IF_ERR_GO_OUT(Stack.numOfStack);
+    IF_ERR_GO_OUT(*VptrTargetStack);
 
-    return Stack.numOfStack;
+    return ptrTargetStack-> maxSize;
 }
 
-int pop (int num){
+int pop(void * vptrTargetStack){
 
-    void *vptrTargetStack = Stack.stack_ptrs[num];
-
-    IF_ERR_GO_OUT(num);
+    IF_ERR_GO_OUT(vptrTargetStack);
 
     stack_t * ptrTargetStack = (stack_t *)vptrTargetStack;
 
@@ -234,18 +166,16 @@ int pop (int num){
 
     int tamporyEl = *((int*)(ptrTargetStack->dataPtr) + --ptrTargetStack->currSize);
 
-    stack_size_chk(num);
+    stack_size_chk(vptrTargetStack);
 
-    IF_ERR_GO_OUT(num);
+    IF_ERR_GO_OUT(vptrTargetStack);
 
     return tamporyEl;
 }
 
-int push (int num, int pushingEl){
+int push(void * vptrTargetStack, int pushingEl){
 
-    void *vptrTargetStack = Stack.stack_ptrs[num];
-
-    IF_ERR_GO_OUT(num);
+    IF_ERR_GO_OUT(vptrTargetStack);
 
     stack_t * ptrTargetStack = (stack_t *)vptrTargetStack;
 
@@ -254,21 +184,19 @@ int push (int num, int pushingEl){
 
     ptrTargetStack->currSize++;
 
-    stack_size_chk(num);
+    stack_size_chk(vptrTargetStack);
 
     *((int*)(ptrTargetStack->dataPtr) + (ptrTargetStack->currSize - 1)) = pushingEl;
 
-    IF_ERR_GO_OUT(num);
+    IF_ERR_GO_OUT(vptrTargetStack);
 
-    return stack_ok(num);
+    return stack_ok(vptrTargetStack);
 
 }
 
-int look (int num, int ElNum){
+int look(void * vptrTargetStack, int ElNum){
 
-    void *vptrTargetStack = Stack.stack_ptrs[num];
-
-    IF_ERR_GO_OUT(num);
+    IF_ERR_GO_OUT(vptrTargetStack);
 
     //assert(vptrTargetStack);
     //assert(((stack_t *)vptrTargetStack)->dataPtr);
@@ -277,29 +205,30 @@ int look (int num, int ElNum){
 
     //add ElNum obrobotku
 
-    IF_ERR_GO_OUT(num);
+    IF_ERR_GO_OUT(vptrTargetStack);
 
     return *((int*)(ptrTtargetStack->dataPtr) + (ptrTtargetStack->currSize - 1 - ElNum));
 
 }
 
-int stack_dtor (int num, int check_right){
+int stack_dtor(void * vptrTargetStack, int check_right){
 
-    void *vptrTargetStack = Stack.stack_ptrs[num];
+    static int had_dest = 0;
 
-    if(num < 0 || num)
+    if(!had_dest){
+        if(  (Stack_error_global != NULL_STACK_PTR)  ||  !(check_right)  ){
 
-    if(  (Stack_error_global != NULL_STACK_PTR)  ||  !(check_right)  ){
-
-        stack_t * ptrTtargetStack = (stack_t *)vptrTargetStack;
-
-        if(  (Stack_error_global != NULL_DATA_PTR)  ||  !(check_right)  ){
-            free(ptrTtargetStack->dataPtr);
+            stack_t * ptrTtargetStack = (stack_t *)vptrTargetStack;
+            if(  (Stack_error_global != NULL_DATA_PTR)  ||  !(check_right)  ){
+                free((char *)ptrTtargetStack->dataPtr - 8);
+            }
+            free(ptrTtargetStack);
         }
-        free(ptrTtargetStack);
     }
 
-    stack_array_decrease (num);
+    had_dest = 1;
 
     return 0;
 }
+
+

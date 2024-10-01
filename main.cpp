@@ -4,20 +4,22 @@
 
 #include "const.h"
 
-
 int main()
 {
-    int test = stack_ctor();
-    push(test, 3);
-    push(test, 4);
-    push(test, 5);
-    printf("%d\n", pop(test));
-    printf("%d\n", pop(test));
-    push(test, 6);
-    push(test, 7);
-    printf("%d\n", pop(test));
-    printf("%d\n", pop(test));
-    printf("%d\n", pop(test));
+    void * testStack = NULL;
+    stack_ctor(&testStack);
+
+    IF_RIGHT_STACK push(testStack, 10) CHECK(testStack);
+    IF_RIGHT_STACK push(testStack, 20) CHECK(testStack);
+    printf("%d\n", look(testStack, 0));
+    printf("%d\n", pop(testStack));
+    push(testStack, 30);
+    push(testStack, 40);
+    printf("%d\n", pop(testStack));
+    printf("%d\n", pop(testStack));
 
 
+    stack_dtor(testStack, 1);
+
+    return 0;
 }
