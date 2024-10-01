@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<BrowseTracker_layout_file>
+	<ActiveTarget name="Debug" />
+	<File name="main.cpp" open="1" top="0" tabpos="6">
+		<Cursor position="580" topLine="0" />
+		<BrowseMarks positions="284" />
+	</File>
+	<File name="errors.h" open="1" top="0" tabpos="4">
+		<Cursor position="1502" topLine="0" />
+	</File>
+	<File name="canary.h" open="1" top="0" tabpos="8">
+		<Cursor position="174" topLine="0" />
+	</File>
+	<File name="stackfunk.cpp" open="1" top="1" tabpos="1">
+		<Cursor position="7799" topLine="92" />
+		<BrowseMarks positions="156,492,788,1812,1910,5819,7671" />
+	</File>
+	<File name="stack_types.h" open="1" top="0" tabpos="2">
+		<Cursor position="1005" topLine="13" />
+		<BrowseMarks positions="" />
+	</File>
+	<File name="const.h" open="1" top="0" tabpos="5">
+		<Cursor position="52" topLine="0" />
+	</File>
+	<File name="const.cpp" open="1" top="0" tabpos="3">
+		<Cursor position="63" topLine="0" />
+	</File>
+	<File name="canary.cpp" open="1" top="0" tabpos="7">
+		<Cursor position="292" topLine="0" />
+	</File>
+</BrowseTracker_layout_file>

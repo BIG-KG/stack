@@ -29,6 +29,7 @@ void stack_array_increase (void){
         Stack.numOfStack ++;
         stack_array_size_check();
         Stack.stacksExist = 1;
+        Stack.numOfStack --;
 
     }
 
@@ -36,9 +37,7 @@ void stack_array_increase (void){
 
 void stack_array_size_check (){
 
-    if (Stack.numOfStack == -1 && Stack.capacity != 0){
-
-        printf("AAAAAA");
+    if (Stack.numOfStack == 0 && Stack.capacity != 0){
 
         free(Stack.stack_ptrs);
 
@@ -53,8 +52,6 @@ void stack_array_size_check (){
 
     else if (Stack.numOfStack >= Stack.capacity){
 
-        printf("BBBBBB");
-
         int minAllowdSize  = (Stack.numOfStack * INCREASE_STEP) > START_STACK_ARR_SIZE ? (Stack.numOfStack * INCREASE_STEP) : START_STACK_ARR_SIZE;
         void **tmp_pointer = (void **)realloc(Stack.stack_ptrs, sizeof(void*)* minAllowdSize);
 
@@ -65,9 +62,7 @@ void stack_array_size_check (){
 
     }
 
-    else if (  (Stack.numOfStack < Stack.capacity/DECREASE_STEP)  &&  (Stack.numOfStack/DECREASE_STEP >= START_STACK_ARR_SIZE)  ){
-
-        printf("CCCCCC");
+    else if (Stack.numOfStack < Stack.capacity/DECREASE_STEP){
 
         int minAllowdSize  = (Stack.numOfStack / REAL_DECREASE_STEP) > START_STACK_ARR_SIZE ? (Stack.numOfStack / REAL_DECREASE_STEP) : START_STACK_ARR_SIZE;
 
@@ -293,30 +288,24 @@ int look (int num, int ElNum){
 
 int stack_dtor (int num, int check_right){
 
-    printf("\ntest1, num = %d  %d         ", num);
+    printf("\ntest1");
 
     void *vptrTargetStack = Stack.stack_ptrs[num];
-
+    
     printf("test2");
 
     if(  (Stack_error_global != NULL_STACK_PTR) && vptrTargetStack != NULL){
-
+    
         printf("test3");
 
         stack_t * ptrTtargetStack = (stack_t *)vptrTargetStack;
 
         if(  (Stack_error_global != NULL_DATA_PTR) && ptrTtargetStack != NULL){
 
-            printf("test4");
-
             free(ptrTtargetStack->dataPtr);
-
-            printf("test5");
 
         }
         free(ptrTtargetStack);
-
-        printf("test6");
     }
 
     stack_array_decrease (num);
