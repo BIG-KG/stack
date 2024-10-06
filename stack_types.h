@@ -6,12 +6,7 @@
 #include <stdlib.h>
 #include <assert.h>
 
-#define IF_ERR_GO_OUT(a){               \
-        stack_ok(a);                    \
-        if(Stack_error_global != 0){    \
-            return Stack_error_global;  \
-        }                               \
-}                                       \
+
 
 
 typedef int stackEl;
@@ -32,20 +27,6 @@ struct stack_t{
 
 };
 
-int look(void * vptrTargetStack, int ElNum);
 
-int push(void * vptrTargetStack, int pushingEl);
-
-int pop(void * vptrTargetStack);
-
-int stack_ctor(void ** VptrTargetStack);
-
-int stack_size_chk(void *vptrTargetStack);
-
-int stack_dump(void *vptrTargetStack, int checkNeed);
-
-int stack_ok(void *vptrTargetStack);
-
-int stack_dtor(void * vptrTargetStack, int check_right);
 
 #endif // STACK_TYPES_H_INCLUDED

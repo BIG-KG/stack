@@ -1,3 +1,10 @@
 
 *.o
 *.exe
+*.save
+*.html
+*.depend
+currSize
+*.exe
+*.exe
+bin/Debug/stack.exe

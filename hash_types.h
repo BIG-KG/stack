@@ -1,0 +1,6 @@
+#ifndef HASH_TYPES_H_INCLUDED
+#define HASH_TYPES_H_INCLUDED
+
+struct
+
+#endif // HASH_TYPES_H_INCLUDED

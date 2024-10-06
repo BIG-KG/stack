@@ -1,4 +1,4 @@
-#include "stack_types.h"
+#include "stack_funk.h"
 
 #include "errors.h"
 
@@ -6,20 +6,19 @@
 
 int main()
 {
-    void * testStack = NULL;
-    stack_ctor(&testStack);
 
-    IF_RIGHT_STACK push(testStack, 10) CHECK(testStack);
-    IF_RIGHT_STACK push(testStack, 20) CHECK(testStack);
-    printf("%d\n", look(testStack, 0));
-    printf("%d\n", pop(testStack));
-    push(testStack, 30);
-    push(testStack, 40);
-    printf("%d\n", pop(testStack));
-    printf("%d\n", pop(testStack));
+    int64_t test = stack_ctor();
+    for(int i = 0 ; i < 100; i++){
+        push(test, i);
+    }
+    stack_dump(test, 0);
 
-
-    stack_dtor(testStack, 1);
+    int64_t test1 = stack_ctor();
+    for(int i = 100 ; i > 0; i--){
+        push(test1, i);
+    }
+    stack_dtor(test);
+    stack_dump(test1, 0);
 
     return 0;
 }
