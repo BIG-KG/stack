@@ -1,4 +1,5 @@
 #include "inner_stack_metods.h"
+#include "stdio.h"
 
 void *stack_pointer(int64_t nameOfStack, int returnOnlyStack){
 
@@ -33,12 +34,17 @@ void *stack_pointer(int64_t nameOfStack, int returnOnlyStack){
 
 }
 
-int64_t right_random_64(){
+int64_t right_random_64(){                          //ÃÅÍÅĞÈĞÓÅÒ ÏĞÀÂÈËÜÍÛÉ, Ñ ÒÎ×ÊÈ ÇĞÅÍÈß ÏĞÎÃÈ ĞÀÍÄÎÌ
 
     int64_t result = 0;
+    static int random_cay = 0;
+
+    random_cay++;
     while(result == 0 || result == -1){
-        result = ((int64_t)rand())<<32;
+        result = ((int64_t)rand())<<32;             // FULL COVERAGE INT_64
         result = result | (int64_t)rand();
+        result = result * random_cay;               //ADD RANDOM, AND EL-TS DONT REAPEAT
+        result = result % 512;                      //ÄËß ÓÄÎÁÍÎÉ ĞÀÁÎÒÛ Ñ İË-ÌÈ
     }
 
     return result;

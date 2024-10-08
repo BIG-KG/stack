@@ -35,6 +35,7 @@
 		<Unit filename="const.cpp" />
 		<Unit filename="const.h" />
 		<Unit filename="errors.h" />
+		<Unit filename="inner_stack_metods.cpp" />
 		<Unit filename="main.cpp" />
 		<Unit filename="stack_types.h" />
 		<Unit filename="stackfunk.cpp" />
