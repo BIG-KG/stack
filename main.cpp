@@ -25,7 +25,6 @@ int main()
     push(test100, 40);
     push(test100, 50);
     push(test100, 60);
-    printf("%d\n", look(test0, 1));
     printf("%d\n", pop(test0));
     printf("%d\n", pop(test0));
     printf("%d\n", pop(test0));
