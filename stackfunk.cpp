@@ -258,6 +258,7 @@ int look(int64_t name, int ElNum){   // add stack to all names
     ptrTtargetStack->currSize--;
     hasher(name, 1);
 
+
     IF_ERR_GO_OUT(name);
 
     return *((int*)(ptrTtargetStack->dataPtr) + (ElNum));
