@@ -51,7 +51,7 @@ int stack_ok(int64_t name){
         return STACK_UNDERFLOW;
     }
 
-    int tmpErorror = hasher(name, 0); //заменить на 1
+    int tmpErorror = hasher(name, 1);
     if(tmpErorror != 0){
         Stack_error_global = tmpErorror;
         return tmpErorror;
@@ -61,34 +61,39 @@ int stack_ok(int64_t name){
 
 }
 
-int stack_dump(int64_t name, int checkNeed){
+void* stack_dump(int64_t name, int checkNeed){
 
-    void *vptrTargetStack = stack_pointer (name, 1);
+    void *vptrTargetStack = stack_pointer (name, 1);                                       //.ыдвоымв
 
     if (1){
 
-        if(Stack_error_global == NULL_STACK_PTR){
-            printf("ERROR pointer tustruct is NULL");
-            return NULL_STACK_PTR;
+
+        if(Stack_error_global == NULL_STACK_PTR || vptrTargetStack == NULL){
+            printf("ERROR pointer tustruct is NULL.\n returning lastEl");
+            return stack_pointer (-1, 1);
         }
+
+
 
         stack_t * ptrTargetStack = (stack_t *)vptrTargetStack;
-        printf("currSize = %d, maxsize = %d\n", ptrTargetStack->currSize, ptrTargetStack->maxSize);
+        printf("currSize = %d, maxsize = %d\n ", ptrTargetStack->currSize, ptrTargetStack->maxSize);
 
-        if(Stack_error_global == NULL_DATA_PTR ){
+
+        if(Stack_error_global == NULL_DATA_PTR || ptrTargetStack->dataPtr == NULL){
             printf("ERROR pointer tustruct is NULL");
-            return NULL_DATA_PTR;
+            return NULL;
         }
+
         for(int i = 0; i < ptrTargetStack->currSize; i++){
             printf("\n%d", look(name, i));
         }
         printf("\n");
 
-        return 0;
+        return NULL;
 
     }
 
-    return 0;
+    return NULL;
 }
 
 int stack_size_chk(int64_t name, int addingSize){
@@ -255,8 +260,6 @@ int look(int64_t name, int ElNum){   // add stack to all names
     void *vptrTargetStack = stack_pointer (name, 1);
 
     stack_t * ptrTtargetStack = (stack_t *)vptrTargetStack;
-    ptrTtargetStack->currSize--;
-    hasher(name, 1);
 
 
     IF_ERR_GO_OUT(name);

@@ -29,7 +29,7 @@ int64_t stack_ctor(void);
 
 int stack_size_chk(int64_t name);
 
-int stack_dump(int64_t name, int checkNeed);
+void* stack_dump(int64_t name, int checkNeed);
 
 int stack_ok(int64_t name);
 
