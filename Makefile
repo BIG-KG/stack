@@ -1,7 +1,7 @@
 all: hello
-	hello
+	hello1
 hello: main.o stackfunk.o const.o canary.o inner_stack_metods.o
-	g++ main.o stackfunk.o const.o canary.o inner_stack_metods.o -o hello
+	g++ main.o stackfunk.o const.o canary.o inner_stack_metods.o -o hello1
 
 main.o: main.cpp
 	g++ -c main.cpp

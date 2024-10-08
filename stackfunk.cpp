@@ -65,7 +65,7 @@ int stack_dump(int64_t name, int checkNeed){
 
     void *vptrTargetStack = stack_pointer (name, 1);
 
-    if (checkNeed == 1){
+    if (1){
 
         if(Stack_error_global == NULL_STACK_PTR){
             printf("ERROR pointer tustruct is NULL");
@@ -79,18 +79,14 @@ int stack_dump(int64_t name, int checkNeed){
             printf("ERROR pointer tustruct is NULL");
             return NULL_DATA_PTR;
         }
+        for(int i = 0; i < ptrTargetStack->currSize; i++){
+            printf("\n%d", look(name, i));
+        }
+        printf("\n");
 
         return 0;
 
     }
-
-    stack_t * ptrTargetStack = (stack_t *)vptrTargetStack;
-    for(int i = 0; i < ptrTargetStack->currSize; i++){
-        printf("\n%d", look(name, i));
-    }
-    printf("\n");
-
-    printf("currSize = %d, maxsize = %d\n", ptrTargetStack->currSize, ptrTargetStack->maxSize);
 
     return 0;
 }
@@ -259,6 +255,8 @@ int look(int64_t name, int ElNum){   // add stack to all names
     void *vptrTargetStack = stack_pointer (name, 1);
 
     stack_t * ptrTtargetStack = (stack_t *)vptrTargetStack;
+    ptrTtargetStack->currSize--;
+    hasher(name, 1);
 
     IF_ERR_GO_OUT(name);
 
